@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RallyUp - Add to Calendar Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <link rel="icon" href="https://images.electricalsector.eaton.com/EloquaImages/clients/EatonElectrical/%7be91c9279-3776-4896-9040-0c293397d992%7d_favicon.png">
+  <link rel="stylesheet" href="https://images.electricalsector.eaton.com/Web/EatonElectrical/{d885373a-5364-463c-80a8-9107d7e98632}_litepicker.css" />
+  <style>
+    .smart {
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #eee;
+    box-shadow: 2px 2px 5px #cdcdcd;
+}
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 2px;
+      box-sizing: border-box;
+      font-family: arial !important;
+    }
+    #div {
+      width: 60%;
+      margin: auto;
+      padding: 40px;
+      border: 1px solid #ccc;
+      font-family: arial !important;
+      background:#ffffff;
+      box-shadow:1px 1px 10px #4a4949;
+      border-radius:5px;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #607D8B;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .row .form-group {
+      flex: 1;
+      min-width: 220px;
+    }
+    .calendar-tabs {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .calendar-tab {
+      padding: 10px;
+      background: #eee;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .calendar-tab.active {
+      background: #007bff;
+      color: white;
+    }
+    .calendar-content {
+      margin-top: 10px;
+    }
+    .calendar-link {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .calendar-link input {
+      flex: 1;
+      margin-left: 10px;
+    }
+    .copy-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      height: 40px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .copy-btn:hover {
+      background-color: #218838;
+    }
+    .btn {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius:4px;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .error {
+      border: 2px solid red;
+    }
+    .toggle-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .toggle-btn.active {
+      background: #28a745;
+    }
+  </style>
+</head>
+<body>
+<div id="div">
+  <h2 style="color:#03A9F4;"> 📅 RallyUp </h2>
+  
+  <div style="color:#767676;"><i>Generate a "Save the Date" smart link in seconds.</i></div> 
+  <div style="text-align:left;width:40%;"> <hr style="border:2px solid #03a9f4;"></div>
+<br>
+  <div class="smart" style="color:#767676;" ><span style="font-weight:bold;color:#767676;">💡 Why Use a Smart Link?</span><br><br>
+Instead of sharing separate calendar links for Google, Outlook, Apple, and others, use a Smart Link — a single, intelligent link that automatically detects your guest's email platform and redirects them to the right calendar.<br><br>
+
+It's the simplest way to ensure everyone can save your event with just one click — on any device, using any calendar.
+<br><br>
+✅ One link for all calendars<br>
+✅ Auto-detects email platform<br>
+✅ Easy to share and RSVP-friendly</div><br>
+
+<br>
+  <form id="eventForm">
+  
+    <div class="form-group">
+      <label>📝 Event Title:</label>
+      <input type="text" id="title" required>
+    </div>
+    <div class="form-group">
+      <label>🗒️ Description / Email Body Content:</label>
+      <textarea id="description" style="height:100px;" required></textarea>
+    </div>
+    <div class="form-group">
+      <label>📍 Location / Meeting link:</label>
+      <input type="text" id="location" required>
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label>📅 Start Date:</label>
+        <input type="text" id="startDate" required>
+      </div>
+      <div class="form-group">
+        <label>⏰ Start Time:</label>
+        <input type="time" id="startTime" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label>📅 End Date:</label>
+        <input type="text" id="endDate" required>
+      </div>
+      <div class="form-group">
+        <label>⏰ End Time:</label>
+        <input type="time" id="endTime" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>🌐 Timezone:</label>
+      <select id="timezone" required>
+        <option value="">Select Timezone</option>
+ <option value="(UTC-12:00) International Date Line West">(UTC-12:00) International Date Line West</option>
+ <option value="(UTC-11:00) Coordinated Universal Time-11">(UTC-11:00) Coordinated Universal Time-11</option>
+ <option value="(UTC-10:00) Hawaii">(UTC-10:00) Hawaii</option>
+ <option value="(UTC-09:00) Alaska">(UTC-09:00) Alaska</option>
+ <option value="(UTC-08:00) Pacific Time (US & Canada)">(UTC-08:00) Pacific Time (US & Canada)</option>
+ <option value="(UTC-07:00) Mountain Time (US & Canada)">(UTC-07:00) Mountain Time (US & Canada)</option>
+ <option value="(UTC-06:00) Central Time (US & Canada)">(UTC-06:00) Central Time (US & Canada)</option>
+ <option value="(UTC-05:00) Eastern Time (US & Canada)">(UTC-05:00) Eastern Time (US & Canada)</option>
+ <option value="(UTC-04:00) Atlantic Time (Canada)">(UTC-04:00) Atlantic Time (Canada)</option>
+ <option value="(UTC-03:00) Buenos Aires">(UTC-03:00) Buenos Aires</option>
+ <option value="(UTC-02:00) Mid-Atlantic">(UTC-02:00) Mid-Atlantic</option>
+ <option value="(UTC-01:00) Azores">(UTC-01:00) Azores</option>
+ <option value="(UTC+00:00) Dublin, Edinburgh, Lisbon, London">(UTC+00:00) Dublin, Edinburgh, Lisbon, London</option>
+ <option value="(UTC+01:00) Amsterdam, Berlin, Rome, Paris">(UTC+01:00) Amsterdam, Berlin, Rome, Paris</option>
+ <option value="(UTC+02:00) Athens, Bucharest, Istanbul">(UTC+02:00) Athens, Bucharest, Istanbul</option>
+ <option value="(UTC+03:00) Moscow, St. Petersburg, Nairobi">(UTC+03:00) Moscow, St. Petersburg, Nairobi</option>
+ <option value="(UTC+03:30) Tehran">(UTC+03:30) Tehran</option>
+ <option value="(UTC+04:00) Abu Dhabi, Muscat">(UTC+04:00) Abu Dhabi, Muscat</option>
+ <option value="(UTC+04:30) Kabul">(UTC+04:30) Kabul</option>
+ <option value="(UTC+05:00) Islamabad, Karachi">(UTC+05:00) Islamabad, Karachi</option>
+ <option value="(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi">(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
+ <option value="(UTC+05:45) Kathmandu">(UTC+05:45) Kathmandu</option>
+ <option value="(UTC+06:00) Astana, Dhaka">(UTC+06:00) Astana, Dhaka</option>
+ <option value="(UTC+06:30) Yangon (Rangoon)">(UTC+06:30) Yangon (Rangoon)</option>
+ <option value="(UTC+07:00) Bangkok, Hanoi, Jakarta">(UTC+07:00) Bangkok, Hanoi, Jakarta</option>
+ <option value="(UTC+08:00) Beijing, Perth, Singapore, Hong Kong">(UTC+08:00) Beijing, Perth, Singapore, Hong Kong</option>
+ <option value="(UTC+09:00) Tokyo, Seoul, Osaka">(UTC+09:00) Tokyo, Seoul, Osaka</option>
+ <option value="(UTC+09:30) Adelaide, Darwin">(UTC+09:30) Adelaide, Darwin</option>
+ <option value="(UTC+10:00) Sydney, Guam, Vladivostok">(UTC+10:00) Sydney, Guam, Vladivostok</option>
+ <option value="(UTC+11:00) Magadan, Solomon Islands">(UTC+11:00) Magadan, Solomon Islands</option>
+ <option value="(UTC+12:00) Auckland, Wellington">(UTC+12:00) Auckland, Wellington</option>
+ <option value="(UTC+13:00) Nuku'alofa">(UTC+13:00) Nuku'alofa</option>
+ <option value="(UTC+14:00) Kiritimati Island">(UTC+14:00) Kiritimati Island</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <button type="button" id="toggleAllDay" class="toggle-btn">All Day Event</button>
+    </div>
+    <button type="button" class="btn" onclick="generateLinks()">Generate Calendar Links</button>
+  </form>
+
+  <div class="calendar-tabs">
+    <div class="calendar-tab active" onclick="showTab('smart')">🔗 Smart Link</div>
+    <div class="calendar-tab" onclick="showTab('google')">📆 Google</div>
+    <div class="calendar-tab" onclick="showTab('outlook')">📧 Outlook</div>
+    <div class="calendar-tab" onclick="showTab('office365')">🏢 Office 365</div>
+    <div class="calendar-tab" onclick="showTab('yahoo')">🗓️ Yahoo</div>
+    <div class="calendar-tab" onclick="showTab('apple')">🍎 Apple (.ics)</div>
+  </div>
+
+  <div class="calendar-content" id="calendarLinks">
+    <div id="smart" class="calendar-link">
+      <button class="copy-btn" onclick="copyLink('smartLink')">Copy</button>
+      <input type="text" id="smartLink" readonly>
+    </div>
+    <div id="google" class="calendar-link" style="display:none;">
+      <button class="copy-btn" onclick="copyLink('googleLink')">Copy</button>
+      <input type="text" id="googleLink" readonly>
+    </div>
+    <div id="outlook" class="calendar-link" style="display:none;">
+      <button class="copy-btn" onclick="copyLink('outlookLink')">Copy</button>
+      <input type="text" id="outlookLink" readonly>
+    </div>
+    <div id="office365" class="calendar-link" style="display:none;">
+      <button class="copy-btn" onclick="copyLink('office365Link')">Copy</button>
+      <input type="text" id="office365Link" readonly>
+    </div>
+    <div id="yahoo" class="calendar-link" style="display:none;">
+      <button class="copy-btn" onclick="copyLink('yahooLink')">Copy</button>
+      <input type="text" id="yahooLink" readonly>
+    </div>
+    <div id="apple" class="calendar-link" style="display:none;">
+      <button class="copy-btn" onclick="downloadICS()">Download</button>
+      <input type="text" id="icsFileName" readonly>
+    </div>
+  </div>
+</div>
+
+<script src="https://images.electricalsector.eaton.com/Web/EatonElectrical/{537b4107-9de0-4519-be7f-c2b5b725888b}_bundle.js"></script>
+<script>
+  new Litepicker({ element: document.getElementById('startDate'), format: 'YYYY-MM-DD' });
+  new Litepicker({ element: document.getElementById('endDate'), format: 'YYYY-MM-DD' });
+
+  const toggleBtn = document.getElementById("toggleAllDay");
+  toggleBtn.addEventListener("click", function() {
+    const isActive = toggleBtn.classList.toggle("active");
+    toggleBtn.textContent = isActive ? "All Day Event (On)" : "All Day Event";
+    document.getElementById("startTime").disabled = isActive;
+    document.getElementById("endTime").disabled = isActive;
+  });
+
+  document.getElementById("startTime").addEventListener("focus", function() {
+    this.showPicker?.();
+  });
+  document.getElementById("endTime").addEventListener("focus", function() {
+    this.showPicker?.();
+  });
+
+  function showTab(tabId) {
+    document.querySelectorAll(".calendar-tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".calendar-link").forEach(link => link.style.display = "none");
+    document.querySelector(`.calendar-tab[onclick*="${tabId}"]`).classList.add("active");
+    document.getElementById(tabId).style.display = "flex";
+  }
+
+  function copyLink(inputId) {
+    const input = document.getElementById(inputId);
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value).then(() => {
+      const btn = document.querySelector(`button[onclick="copyLink('${inputId}')"]`);
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy", 2000);
+    });
+  }
+
+  function convertTo24Hour(timeStr) {
+    return timeStr + ":00";
+  }
+
+  function generateLinks() {
+    const requiredFields = ["title", "description", "location", "startDate", "endDate", "timezone"];
+    let firstInvalid = null;
+    requiredFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value) {
+        el.classList.add("error");
+        if (!firstInvalid) firstInvalid = el;
+      } else {
+        el.classList.remove("error");
+      }
+    });
+
+    const allDay = toggleBtn.classList.contains("active");
+    if (!allDay) {
+      ["startTime", "endTime"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value) {
+          el.classList.add("error");
+          if (!firstInvalid) firstInvalid = el;
+        } else {
+          el.classList.remove("error");
+        }
+      });
+    }
+
+    if (firstInvalid) {
+      firstInvalid.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    const title = encodeURIComponent(document.getElementById("title").value);
+    const description = encodeURIComponent(document.getElementById("description").value);
+    const location = encodeURIComponent(document.getElementById("location").value);
+    const timezone = document.getElementById("timezone").value;
+
+    let start = document.getElementById("startDate").value;
+    let end = document.getElementById("endDate").value;
+
+
+    if (!allDay) {
+      start += "T" + convertTo24Hour(document.getElementById("startTime").value);
+      end += "T" + convertTo24Hour(document.getElementById("endTime").value);
+    }
+
+    const startUTC = new Date(start).toISOString().replace(/-|:|\.\d\d\d/g,"");
+    const endUTC = new Date(end).toISOString().replace(/-|:|\.\d\d\d/g,"");
+
+    const google = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startUTC}/${endUTC}&details=${description}&location=${location}&ctz=${timezone}`;
+    const outlook = `https://outlook.live.com/calendar/0/action/compose?subject=${title}&body=${description}&location=${location}&startdt=${start}&enddt=${end}`;
+    const office365 = `https://outlook.office.com/calendar/0/action/compose?subject=${title}&body=${description}&location=${location}&startdt=${start}&enddt=${end}`;
+    const yahoo = `https://calendar.yahoo.com/?v=60&title=${title}&st=${startUTC}&et=${endUTC}&desc=${description}&in_loc=${location}`;
+
+    const domain = encodeURIComponent('eloqua..type--emailfield..syntax--Email_address_domain1~~');
+    const smartUrl = `https://content.eaton.com/calendar?title=${title}&description=${description}&location=${location}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&timezone=${encodeURIComponent(timezone)}&domain=~~${domain}`;
+
+    document.getElementById("googleLink").value = google;
+    document.getElementById("outlookLink").value = outlook;
+    document.getElementById("office365Link").value = office365;
+    document.getElementById("yahooLink").value = yahoo;
+    document.getElementById("icsFileName").value = document.getElementById("title").value + ".ics";
+    document.getElementById("smartLink").value = smartUrl;
+    document.getElementById("smart").style.display = "flex";
+  }
+
+  function downloadICS() {
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const location = document.getElementById("location").value;
+    const allDay = toggleBtn.classList.contains("active");
+
+    let start = document.getElementById("startDate").value;
+    let end = document.getElementById("endDate").value;
+
+    if (!allDay) {
+      start += "T" + convertTo24Hour(document.getElementById("startTime").value);
+      end += "T" + convertTo24Hour(document.getElementById("endTime").value);
+    }
+
+    const startUTC = new Date(start).toISOString().replace(/-|:|\.\d\d\d/g,"");
+    const endUTC = new Date(end).toISOString().replace(/-|:|\.\d\d\d/g,"");
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${title}
+DESCRIPTION:${description}
+LOCATION:${location}
+DTSTART:${startUTC}
+DTEND:${endUTC}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const link = document.createElement("a");
+    link.href=URL.createObjectURL(blob);
+    link.download = title + ".ics";
+    link.click();
+  }
+</script>
+  
+<script>
+  function replaceApostrophes(text) {
+    return text.replace(/'/g, "'");
+  }
+
+  function sanitizeAllInputs() {
+    const inputs = document.querySelectorAll("input[type='text'], textarea");
+
+    inputs.forEach(input => {
+      input.addEventListener("input", () => {
+        const cursorPos = input.selectionStart;
+        const sanitized = replaceApostrophes(input.value);
+        if (sanitized !== input.value) {
+          input.value = sanitized;
+          input.setSelectionRange(cursorPos, cursorPos); // Keep cursor position
+        }
+      });
+    });
+  }
+
+  // Run on page load
+  window.addEventListener("DOMContentLoaded", sanitizeAllInputs);
+</script>
+
+  
+</body>
+</html>

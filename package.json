@@ -1,0 +1,15 @@
+{
+  "name": "html-tool",
+  "version": "1.0.0",
+  "description": "A simple HTML tool",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server .",
+    "lint": "eslint .",
+    "audit": "npm audit"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "eslint": "^8.50.0"
+  }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+<link rel="icon" href="https://images.electricalsector.eaton.com/EloquaImages/clients/EatonElectrical/%7be91c9279-3776-4896-9040-0c293397d992%7d_favicon.png">
+  <title>Smart Add to Calendar Redirect</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+.message {
+    font-size: 1.2em;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 50%;
+    margin: auto;
+    background: #eee;
+    margin-top: 50px;
+}
+    .loader {
+      width: 24px;
+      height: 24px;
+      border: 4px solid #ccc;
+      border-top: 4px solid #333;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .calendar-options button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+     
+      color: white;
+    }
+
+
+.google-btn {
+  background-color: #4285F4;
+}
+.google-btn:hover {
+  background-color: #3367D6;
+}
+
+.outlook-btn {
+  background-color: #0078D4;
+}
+.outlook-btn:hover {
+  background-color: #005A9E;
+}
+
+.yahoo-btn {
+  background-color: #6001D2;
+}
+.yahoo-btn:hover {
+  background-color: #4B00A8;
+}
+
+.ics-btn {
+  background-color: #6c757d;
+}
+.ics-btn:hover {
+  background-color: #5a6268;
+}
+.cal-div {font-weight:bold;}
+
+  </style>
+</head>
+<body>
+  <div class="message">
+    <div id="status">Redirecting you to your calendar...</div>
+    <div class="loader"></div>
+  </div>
+
+  <script>
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name) || '';
+    }
+
+    function encodeICS(text) {
+      return text.replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+    }
+
+    const title = getParam('title');
+    const description = getParam('description');
+    const eventLocation = getParam('location');
+    const start = getParam('start');
+    const end = getParam('end');
+    const domain = getParam('domain').toLowerCase();
+
+    const startUTC = new Date(start).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const endUTC = new Date(end).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    const encodedTitle = encodeURIComponent(title);
+    const encodedDescription = encodeURIComponent(description);
+    const encodedLocation = encodeURIComponent(eventLocation);
+
+    const googleLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startUTC}/${endUTC}&details=${encodedDescription}&location=${encodedLocation}`;
+    const outlookLink = `https://outlook.office.com/calendar/0/action/compose?subject=${encodedTitle}&body=${encodedDescription}&location=${encodedLocation}&startdt=${start}&enddt=${end}`;
+    const yahooLink = `https://calendar.yahoo.com/?v=60&title=${encodedTitle}&st=${startUTC}&et=${endUTC}&desc=${encodedDescription}&in_loc=${encodedLocation}`;
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${encodeICS(title)}
+DESCRIPTION:${encodeICS(description)}
+LOCATION:${encodeICS(eventLocation)}
+DTSTART:${startUTC}
+DTEND:${endUTC}
+END:VEVENT
+END:VCALENDAR`;
+
+    function downloadICS() {
+      const blob = new Blob([icsContent], { type: 'text/calendar' });
+      const link = document.createElement('a');
+      link.href=URL.createObjectURL(blob);
+      link.download = title + '.ics';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function showOptions() {
+      const container = document.querySelector('.message');
+      container.innerHTML = `
+        <div class="cal-div">Select the calendar you prefer to add this event:</div>
+        <div class="calendar-options">
+          <div class="calendar-options">
+  <button class="google-btn" onclick="window.location.href='${googleLink}'">Google Calendar</button>
+  <button class="outlook-btn" onclick="window.location.href='${outlookLink}'">Outlook</button>
+  <button class="yahoo-btn" onclick="window.location.href='${yahooLink}'">Yahoo</button>
+  <button class="ics-btn" onclick="downloadICS()">Download .ICS</button>
+</div>
+
+        </div>
+      `;
+    }
+
+    function redirectToCalendar() {
+      if (domain.includes('gmail.com') || domain.includes('googlemail.com')) {
+        window.location.href=googleLink;
+      } else if (
+        domain.includes('outlook.com') ||
+        domain.includes('office365.com') ||
+        domain.includes('microsoft.com') ||
+        domain.includes('live.com')
+      ) {
+        window.location.href=outlookLink;
+      } else if (domain.includes('yahoo.com')) {
+        window.location.href=yahooLink;
+      } else if (
+        domain.includes('icloud.com') ||
+        domain.includes('me.com') ||
+        domain.includes('mac.com')
+      ) {
+        downloadICS();
+      } else {
+        showOptions();
+      }
+    }
+
+    redirectToCalendar();
+	
+	  // Remove URL parameters after page load
+window.addEventListener('load', function () {
+  if (window.history.replaceState) {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+});
+  </script>
+</body>
+</html>
