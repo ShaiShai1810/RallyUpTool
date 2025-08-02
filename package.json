@@ -1,7 +1,7 @@
 {
-  "name": "html-tool",
+  "name": "RallyUp",
   "version": "1.0.0",
-  "description": "A simple HTML tool",
+  "description": "A simple Save the Date tool",
   "main": "index.js",
   "scripts": {
     "start": "http-server .",
